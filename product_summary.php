@@ -3,17 +3,12 @@ session_start();
 
        if(isset($_COOKIE['id'])||(isset($_SESSION['id']) && !empty($_SESSION['id'])))
         {
-        	   header('Location:index.php');
-        }
-        else
-        {
      ?>
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Mobile online Shopping cart</title>
+    <title>Bootshop online Shopping cart</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -69,24 +64,69 @@ session_start();
 		  <button type="submit" id="submitButton" class="btn btn-primary">Go</button>
     </form>
     <ul id="topMenu" class="nav pull-right">
-	 <li class=""><a href="special_offer.php">Product</a></li>
-	 <li class=""><a href="register.php">Register</a></li>
-	 <li class=""><a href="special_offer.php">Offer</a></li>
-	 <li class="">
+	 <li class=""><a href="products.php">Product</a></li>
+	 
+	 <?php
+	
+	 $cc=null;
+     $ss=null;
+	if(isset($_COOKIE['id']))
+	{
+	$cc=$_COOKIE['id'];
+	}
+	else if(isset($_SESSION['id']))
+	{
+	$ss=$_SESSION['id'];
+	}
+	   if(isset($_COOKIE['id'])||(isset($_SESSION['id'])))
+	   {
+       if($cc=='admin'||$ss=='admin')
+        {
+     ?>
+     <li class=""><a href="special_offer.php">Offer</a></li>
+	 <li class=""><a href="admin_pannel_1.php">Admin</a></li>
+	  <li class="">
+	 <a href="logout.php" style="padding-right:0"><span class="btn btn-large btn-success">Logout</span></a>
+	</li>
+     <?php 
+         }
+         else
+         {
+         	?>
+
+         	<li class=""><a href="special_offer.php">Offer</a></li>
+          <li class="">
+	 <a href="logout.php" style="padding-right:0"><span class="btn btn-large btn-success">Logout</span></a>
+	</li>
+	<?php 
+         }
+       }
+        else
+         {
+      ?>
+        <li class=""><a href="Register.php">Register</a></li>
+         <li class=""><a href="special_offer">Offer</a></li>
+          <li class="">
 	 <a href="login.php" style="padding-right:0"><span class="btn btn-large btn-success">Login</span></a>
 	</li>
+      <?php 
+        }
+      ?>
+
+	 
+	
     </ul>
   </div>
 </div>
 </div>
 </div>
 <!-- Header End====================================================================== -->
-<div id="mainBody">
+<div id="mainBody"> 
 	<div class="container">
 	<div class="row">
 <!-- Sidebar ================================================== -->
 	<div id="sidebar" class="span3">
-		
+		<div class="well well-small"><a id="myCart" href="product_summary.php"><img src="themes/images/ico-cart.png" alt="cart">3 Items in your cart  <span class="badge badge-warning pull-right">$155.00</span></a></div>
 		<ul id="sideManu" class="nav nav-tabs nav-stacked">
 			<li class="subMenu open"><a> SYMPHONI [230]</a>
 				<ul>
@@ -198,62 +238,120 @@ session_start();
 	</div>
 <!-- Sidebar end=============================================== -->
 	<div class="span9">
-    <ul class="breadcrumb">
-		<li><a href="index.php">Home</a> <span class="divider">/</span></li>
-		<li class="active">Login</li>
-    </ul>
-	<h3> Login</h3>	
-	<hr class="soft"/>
-	
-	<div class="row">
-		<div class="span4">
-			<div class="well">
-			<h5>CREATE YOUR ACCOUNT</h5><br/>
-			Enter your e-mail address to create an account.<br/><br/><br/>
-			<form action="register.php">
-			  <div class="control-group">
-				<label class="control-label" for="inputEmail0">E-mail address</label>
+    
+
+
+			
+	<table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Description</th>
+                  <th>Quantity/Update</th>
+				  <th>Price</th>
+                  <th>Discount</th>
+                  <th>Tax</th>
+                  <th>Total</th>
+				</tr>
+              </thead>
+              <tbody>
+
+                 <?php
+                  $id=$_GET['id'];
+                  $conn = new mysqli("localhost", "root", "", "mobile_market");
+                  $sql="SELECT * FROM product where product_id=$id";
+					$result=$conn->query($sql);
+					while($row = $result->fetch_assoc())
+					{
+						$p=$row['product_price'];;
+						$q=$row['product_price']*.025;;
+						$r=$row['product_price']*.005;
+						
+				?>
+
+                <tr>
+                  <td> <img width="60" src="themes/images/products/4.jpg" alt=""/></td>
+                  <td><?php $row['product_name']; ?><br/>Color : black, Material : metal</td>
+				  <td>
+					<div class="input-append"><input class="span1" style="max-width:34px" placeholder="1" id="appendedInputButtons" size="16" type="text"><button class="btn" type="button"><i class="icon-minus"></i></button><button class="btn" type="button"><i class="icon-plus"></i></button><button class="btn btn-danger" type="button"><i class="icon-remove icon-white"></i></button>				</div>
+				  </td>
+                  <td><?php echo $p; ?></td>
+                  <td><?php echo $q; ?></td>
+                  <td><?php echo $r; ?></td>
+                  <td>Total</td>
+                </tr>
+
+                <tr>
+                  <td colspan="6" style="text-align:right">Total Price:	</td>
+                  <td><?php echo $p; ?> tk/=</td>
+                </tr>
+				 <tr>
+                  <td colspan="6" style="text-align:right">Total Discount:	</td>
+                  <td><?php echo $q; ?> tk/=</td>
+                </tr>
+                 <tr>
+                  <td colspan="6" style="text-align:right">Total Tax:	</td>
+                  <td><?php echo $r; ?> tk/=</td>
+                </tr>
+				 <tr>
+                  <td colspan="6" style="text-align:right"><strong>TOTAL =</strong></td>
+                  <td class="label label-important" style="display:block"> <strong><?php echo $p-$q+$r; ?> tk/=</strong></td>
+                </tr>
+                 <?php 
+                  }
+                ?>
+				</tbody>
+            </table>
+		
+            <table class="table table-bordered">
+			<tbody>
+				 <tr>
+                  <td> 
+				<form class="form-horizontal">
+				<div class="control-group">
+				<label class="control-label"><strong> VOUCHERS CODE: </strong> </label>
 				<div class="controls">
-				  <input class="span3"  type="text" id="inputEmail0" placeholder="Email">
+				<input type="text" class="input-medium" placeholder="CODE">
+				<button type="submit" class="btn"> ADD </button>
 				</div>
-			  </div>
-			  <div class="controls">
-			  <button type="submit" class="btn block">Create Your Account</button>
-			  </div>
-			</form>
-		</div>
-		</div>
-		<div class="span1"> &nbsp;</div>
-		<div class="span4">
-			<div class="well">
-			<h5>ALREADY REGISTERED ?</h5>
-			<form action="login_process.php" method="post">
-			  <div class="control-group">
-				<label class="control-label" for="inputEmail1">Email</label>
-				<div class="controls">
-				  <input class="span3" name="input_email"  type="text" id="inputEmail1" placeholder="Email">
 				</div>
-			  </div>
-			  <div class="control-group">
-				<label class="control-label" for="inputPassword1">Password</label>
-				<div class="controls">
-				  <input type="password" class="span3" name="input_password"  id="inputPassword1" placeholder="Password">
-				</div>
-			  </div>
-			  <div class="control-group">
-				<label class="checkbox">
-				<input type="checkbox" name="check" value="yes"> Remember me
-				</label>
-			  </div>
-			  <div class="control-group">
-				<div class="controls">
-				  <button type="submit" class="btn">Sign in</button> <a href="#">Forget password?</a>
-				</div>
-			  </div>
-			</form>
-		</div>
-		</div>
-	</div>	
+				</form>
+				</td>
+                </tr>
+				
+			</tbody>
+			</table>
+
+			
+			
+			<table class="table table-bordered">
+			 <tr><th>ESTIMATE YOUR SHIPPING </th></tr>
+			 <tr> 
+			 <td>
+				<form class="form-horizontal">
+				  <div class="control-group">
+					<label class="control-label" for="inputCountry">Country </label>
+					<div class="controls">
+					  <input type="text" id="inputCountry" placeholder="Country">
+					</div>
+				  </div>
+				  <div class="control-group">
+					<label class="control-label" for="inputPost">Post Code/ Zipcode </label>
+					<div class="controls">
+					  <input type="text" id="inputPost" placeholder="Postcode">
+					</div>
+				  </div>
+				  <div class="control-group">
+					<div class="controls">
+					  <button type="submit" class="btn">ESTIMATE </button>
+					</div>
+				  </div>
+				</form>				  
+			  </td>
+			  </tr>
+            </table>		
+	<a href="products.php" class="btn btn-large"><i class="icon-arrow-left"></i> Continue Shopping </a>
+	<a href="login.php" class="btn btn-large pull-right">Next <i class="icon-arrow-right"></i></a>
 	
 </div>
 </div></div>
@@ -312,6 +410,9 @@ session_start();
 </html>
 
 <?php 
-
+}
+else
+{
+	header('Location:index.php');
 }
 ?>

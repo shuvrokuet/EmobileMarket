@@ -1,19 +1,26 @@
 <?php
 session_start();
+$cc=null;
+$ss=null;
+if(isset($_COOKIE['id']))
+{
+	$cc=$_COOKIE['id'];
+}
+else
+{
+	$ss=$_SESSION['id'];
+}
 
-       if(isset($_COOKIE['id'])||(isset($_SESSION['id']) && !empty($_SESSION['id'])))
+       if($cc=='admin'||$ss=='admin')
         {
-        	   header('Location:index.php');
-        }
-        else
-        {
+        	  
+        	   	 
      ?>
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Mobile online Shopping cart</title>
+    <title>Online Mobile Shopping</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -69,12 +76,13 @@ session_start();
 		  <button type="submit" id="submitButton" class="btn btn-primary">Go</button>
     </form>
     <ul id="topMenu" class="nav pull-right">
-	 <li class=""><a href="special_offer.php">Product</a></li>
-	 <li class=""><a href="register.php">Register</a></li>
+	 <li class=""><a href="products.php">Product</a></li>
 	 <li class=""><a href="special_offer.php">Offer</a></li>
-	 <li class="">
-	 <a href="login.php" style="padding-right:0"><span class="btn btn-large btn-success">Login</span></a>
+	 <li class=""><a href="#">Admin</a></li>
+	  <li class="">
+	 <a href="logout.php" style="padding-right:0"><span class="btn btn-large btn-success">Logout</span></a>
 	</li>
+	
     </ul>
   </div>
 </div>
@@ -200,63 +208,148 @@ session_start();
 	<div class="span9">
     <ul class="breadcrumb">
 		<li><a href="index.php">Home</a> <span class="divider">/</span></li>
-		<li class="active">Login</li>
+		<li class="active">Registration</li>
     </ul>
-	<h3> Login</h3>	
-	<hr class="soft"/>
-	
-	<div class="row">
-		<div class="span4">
-			<div class="well">
-			<h5>CREATE YOUR ACCOUNT</h5><br/>
-			Enter your e-mail address to create an account.<br/><br/><br/>
-			<form action="register.php">
-			  <div class="control-group">
-				<label class="control-label" for="inputEmail0">E-mail address</label>
-				<div class="controls">
-				  <input class="span3"  type="text" id="inputEmail0" placeholder="Email">
-				</div>
-			  </div>
-			  <div class="controls">
-			  <button type="submit" class="btn block">Create Your Account</button>
-			  </div>
-			</form>
+	<h3> Registration</h3>	
+	<div class="well">
+	<!--
+	<div class="alert alert-info fade in">
+		<button type="button" class="close" data-dismiss="alert">×</button>
+		<strong>Lorem Ipsum is simply dummy</strong> text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+	 </div>
+	<div class="alert fade in">
+		<button type="button" class="close" data-dismiss="alert">×</button>
+		<strong>Lorem Ipsum is simply dummy</strong> text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+	 </div>
+	 <div class="alert alert-block alert-error fade in">
+		<button type="button" class="close" data-dismiss="alert">×</button>
+		<strong>Lorem Ipsum is simply</strong> dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+	 </div> -->
+	          <?php
+                  $id=$_GET['id'];
+                  $conn = new mysqli("localhost", "root", "", "mobile_market");
+                  $sql="SELECT * FROM product where product_id=$id";
+					$result=$conn->query($sql);
+					while($row = $result->fetch_assoc())
+					{
+				?>
+	<form class="form-horizontal" action="edit_product_process.php?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data">
+		<h4>Product Information</h4>
+		<div class="control-group">
+		<div class="control-group">
+			<label class="control-label" for="inputFname1">Product Name<sup>*</sup></label>
+			<div class="controls">
+			  <input type="text" value="<?php echo $row['product_name']; ?>"  name="product_name" id="inputFname1" placeholder="Product Name">
+			</div>
+		 </div>
+		<div class="control-group">
+		<label class="control-label" for="input_email">Product Price<sup>*</sup></label>
+		<div class="controls"> 
+		  <input type="text" value="<?php echo $row['product_price']; ?>" name="product_price" id="input_email" placeholder="price">
 		</div>
+	  </div>	    
+		
+		<div class="control-group">
+		<label class="control-label" for="input_email">Product Quantity<sup>*</sup></label>
+		<div class="controls">
+		  <input type="text" value="<?php echo $row['product_quantity']; ?>" name="product_quantity" id="input_email" placeholder="quantity">
 		</div>
-		<div class="span1"> &nbsp;</div>
-		<div class="span4">
-			<div class="well">
-			<h5>ALREADY REGISTERED ?</h5>
-			<form action="login_process.php" method="post">
-			  <div class="control-group">
-				<label class="control-label" for="inputEmail1">Email</label>
-				<div class="controls">
-				  <input class="span3" name="input_email"  type="text" id="inputEmail1" placeholder="Email">
-				</div>
-			  </div>
-			  <div class="control-group">
-				<label class="control-label" for="inputPassword1">Password</label>
-				<div class="controls">
-				  <input type="password" class="span3" name="input_password"  id="inputPassword1" placeholder="Password">
-				</div>
-			  </div>
-			  <div class="control-group">
-				<label class="checkbox">
-				<input type="checkbox" name="check" value="yes"> Remember me
-				</label>
-			  </div>
-			  <div class="control-group">
-				<div class="controls">
-				  <button type="submit" class="btn">Sign in</button> <a href="#">Forget password?</a>
-				</div>
-			  </div>
-			</form>
+	  </div>
+
+		
+
+	  <div class="control-group">
+		<label class="control-label" for="input_email">Network Type<sup>*</sup></label>
+		<div class="controls">
+		<input type="text" value="<?php echo $row['network_type']; ?>" name="product_network" id="input_email" placeholder="network">
+			
+		</textarea>
 		</div>
+	  </div>
+	  <div class="control-group">
+		<label class="control-label" for="input_email">Battery Type<sup>*</sup></label>
+		<div class="controls">
+		<input type="text" value="<?php echo $row['battery_type']; ?>" name="product_battery" id="input_email" placeholder="battery">
+			
 		</div>
-	</div>	
-	
+	  </div>
+	  <div class="control-group">
+		<label class="control-label" for="input_email">Camera Resulation<sup>*</sup></label>
+		<div class="controls">
+		<input type="text" value="<?php echo $row['camera_resulation']; ?>" name="product_camera"  id="input_email" placeholder="camera">
+			
+		</div>
+	  </div>
+	  <div class="control-group">
+		<label class="control-label" for="input_email">Gpu<sup>*</sup></label>
+		<div class="controls">
+		<input type="text" value="<?php echo $row['gpu']; ?>" name="product_gpu" id="input_email" placeholder="gpu">
+			
+		</div>
+	  </div>
+	  <div class="control-group">
+		<label class="control-label" for="input_email">Ram<sup>*</sup></label>
+		<div class="controls">
+		<input type="text" value="<?php echo $row['ram']; ?>" name="product_ram"  id="input_email" placeholder="ram">
+			
+		</div>
+	  </div>
+	  <div class="control-group">
+		<label class="control-label" for="input_email">Rom<sup>*</sup></label>
+		<div class="controls">
+		<input type="text" value="<?php echo $row['rom']; ?>" name="product_rom" id="input_email" placeholder="rom">
+		
+		</div>
+	  </div>
+
+	  
+
+	  <div class="control-group">
+		<label class="control-label" for="input_email">Display size<sup>*</sup></label>
+		<div class="controls">
+		<input type="text" value="<?php echo $row['display_size']; ?>" name="product_display" id="input_email" placeholder="display ">
+		</div>
+	  </div>
+
+	  <div class="control-group">
+		<label class="control-label" for="input_email">Sensor<sup>*</sup></label>
+		<div class="controls">
+		<input type="text" value="<?php echo $row['sensor']; ?>" name="product_sensor" id="input_email" placeholder="sensor ">
+		</div>
+	  </div>
+
+	  <div class="control-group">
+		<label class="control-label" for="input_email">Identity<sup>*</sup></label>
+		<div class="controls">
+		<input type="text" value="<?php echo $row['identity']; ?>" name="product_identity" id="input_email" placeholder="identity ">
+		</div>
+	  </div>
+
+	  <div class="control-group">
+		<label class="control-label" for="input_email">Offer<sup>*</sup></label>
+		<div class="controls">
+		<input type="text" value="<?php echo $row['product_offer']; ?>" name="product_offer" id="input_email" placeholder="offer ">
+		</div>
+	  </div>
+
+			
+	<div class="control-group">
+			<div class="controls">
+				<input type="hidden" name="email_create" value="1">
+				<input type="hidden" name="is_new_customer" value="1">
+				<input class="btn btn-large btn-success" type="submit" value="Add" />
+			</div>
+		</div>		
+	</form>
+
+	<?php 
+     }
+	?>
 </div>
-</div></div>
+
+</div>
+</div>
+</div>
 </div>
 <!-- MainBody End ============================= -->
 <!-- Footer ================================================================== -->
@@ -312,6 +405,10 @@ session_start();
 </html>
 
 <?php 
-
 }
+else
+{
+	header('Location:index.php');
+}
+
 ?>

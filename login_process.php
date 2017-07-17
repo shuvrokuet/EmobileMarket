@@ -1,8 +1,8 @@
 <?php
 ob_start();
 session_start();
-$user_email=$_POST['input_email'];
-$user_password=$_POST['input_password'];
+$user_email=trim($_POST['input_email']);
+$user_password=trim($_POST['input_password']);
 
 if($user_email=='admin'&&$user_password=='admin')
 {

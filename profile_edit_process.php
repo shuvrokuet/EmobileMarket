@@ -1,4 +1,5 @@
 <?php
+session_start();
 ob_start();
 
 
@@ -14,9 +15,9 @@ insert_user($user_name,$user_email,$user_password,$user_city,$user_postcode,$use
 header('Location:register.php');
  
  function insert_user($user_name,$user_email,$user_password,$user_city,$user_postcode,$user_country,$user_mobile){
+ 	 $id=$_SESSION['id'];
  	 $conn = new mysqli("localhost", "root", "", "mobile_market");
-	 $user_information="INSERT INTO register(user_name,user_email,user_password,user_city,user_zip,user_country,user_phone) VALUES('$user_name',
-	 '$user_email','$user_password','$user_city','$user_postcode','$user_country','$user_mobile')";
+	 $user_information="UPDATE register SET user_name='$user_name',user_email='$user_email',user_password='$user_password',user_city='$user_city',user_zip='$user_postcode',user_country='$user_country',user_phone='$user_mobile' WHERE user_id=$id";
 	 $conn->query($user_information);
  }
 ?>

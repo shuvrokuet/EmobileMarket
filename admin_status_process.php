@@ -16,10 +16,7 @@ $product_relase=$_POST['product_relase'];
 $product_display=$_POST['product_display'];
 $product_sensor=$_POST['product_sensor'];
 $product_identity=$_POST['product_identity'];
-
-
-
-
+$product_offer=$_POST['product_offer'];
 
 if($_FILES['product_image']['error']>0)
 {
@@ -35,16 +32,17 @@ $img_link="http://localhost/akif/upload/".$prefix.$_FILES['product_image']['name
 
 $product_sensor=$_POST['product_sensor'];
 $product_identity=$_POST['product_identity'];
-status_update($product_name,$product_price,$product_quantity,$img_link,$product_network,$product_battery,$product_camera,$product_gpu,$product_ram,$product_rom,$product_relase,$product_display,$product_sensor,$product_identity);
+status_update($product_name,$product_price,$product_quantity,$img_link,$product_network,$product_battery,$product_camera,$product_gpu,$product_ram,$product_rom,$product_relase,$product_display,$product_sensor,$product_identity,$product_offer);
 header('Location:admin_pannel_1.php?status=yes');
 
-function status_update($product_name,$product_price,$product_quantity,$img_link,$product_network,$product_battery,$product_camera,$product_gpu,$product_ram,$product_rom,$product_relase,$product_display,$product_sensor,$product_identity){
+function status_update($product_name,$product_price,$product_quantity,$img_link,$product_network,$product_battery,$product_camera,$product_gpu,$product_ram,$product_rom,$product_relase,$product_display,$product_sensor,$product_identity,$product_offer){
 	$conn = new mysqli("localhost", "root", "", "mobile_market");
 
 	$sql="INSERT INTO product(product_name,product_price,product_quantity,img_link,network_type,battery_type,camera_resulation,gpu,ram,rom,
-	releasedate,display_size,sensor,identity)VALUES('$product_name','$product_price','$product_quantity','$img_link','$product_network',
+	releasedate,display_size,sensor,identity,product_offer)VALUES('$product_name','$product_price','$product_quantity','$img_link',
+	'$product_network',
 	'$product_battery','$product_camera','$product_gpu','$product_ram','$product_rom','$product_relase','$product_display','$product_sensor',
-	'$product_identity')";
+	'$product_identity','$product_offer')";
 	 $conn->query($sql);
 }
 

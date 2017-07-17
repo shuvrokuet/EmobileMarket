@@ -40,17 +40,7 @@ session_start();
 <div class="container">
 <div id="welcomeLine" class="row">
 	<div class="span6">Welcome!<strong> User</strong></div>
-	<div class="span6">
-	<div class="pull-right">
-		<a href="product_summary.html"><span class="">Fr</span></a>
-		<a href="product_summary.html"><span class="">Es</span></a>
-		<span class="btn btn-mini">En</span>
-		<a href="product_summary.html"><span>&pound;</span></a>
-		<span class="btn btn-mini">$155.00</span>
-		<a href="product_summary.html"><span class="">$</span></a>
-		<a href="product_summary.html"><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ 3 ] Itemes in your cart </span> </a> 
-	</div>
-	</div>
+	
 </div>
 <!-- Navbar ================================================== -->
 <div id="logoArea" class="navbar">
@@ -61,49 +51,72 @@ session_start();
 </a>
   <div class="navbar-inner">
     <a class="brand" href="index.php"><img src="themes/images/logo.png" alt="Bootsshop"/></a>
-		<form class="form-inline navbar-search" method="post" action="products.html" >
+		<form class="form-inline navbar-search" method="post" action="products.php" >
 		<input id="srchFld" class="srchTxt" type="text" />
 		  <select class="srchTxt">
 			<option>All</option>
-			<option>CLOTHES </option>
-			<option>FOOD AND BEVERAGES </option>
-			<option>HEALTH & BEAUTY </option>
-			<option>SPORTS & LEISURE </option>
-			<option>BOOKS & ENTERTAINMENTS </option>
+			<option>Samsung </option>
+			<option>Symphony </option>
+			<option>Oppo </option>
+			
 		</select> 
 		  <button type="submit" id="submitButton" class="btn btn-primary">Go</button>
     </form>
     <ul id="topMenu" class="nav pull-right">
-	 <li class=""><a href="special_offer.html">Specials Offer</a></li>
-	 <li class=""><a href="normal.html">Delivery</a></li>
-	 <li class=""><a href="contact.html">Contact</a></li>
-	 <li class="">
-	 <a href="#login" role="button" data-toggle="modal" style="padding-right:0"><span class="btn btn-large btn-success">Login</span></a>
-	<div id="login" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="false" >
-		  <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			<h3>Login Block</h3>
-		  </div>
-		  <div class="modal-body">
-			<form class="form-horizontal loginFrm">
-			  <div class="control-group">								
-				<input type="text" id="inputEmail" placeholder="Email">
-			  </div>
-			  <div class="control-group">
-				<input type="password" id="inputPassword" placeholder="Password">
-			  </div>
-			  <div class="control-group">
-				<label class="checkbox">
-				<input type="checkbox"> Remember me
-				</label>
-			  </div>
-			</form>		
-			<button type="submit" class="btn btn-success">Sign in</button>
-			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-		  </div>
-	</div>
+	 <li class=""><a href="products.php">Product</a></li>
+	 
+	 <?php
+	
+	 $cc=null;
+     $ss=null;
+	if(isset($_COOKIE['id']))
+	{
+	$cc=$_COOKIE['id'];
+	}
+	else if(isset($_SESSION['id']))
+	{
+	$ss=$_SESSION['id'];
+	}
+	   if(isset($_COOKIE['id'])||(isset($_SESSION['id'])))
+	   {
+       if($cc=='admin'||$ss=='admin')
+        {
+     ?>
+     <li class=""><a href="special_offer.php">Offer</a></li>
+	 <li class=""><a href="admin_pannel_1.php">Admin</a></li>
+	  <li class="">
+	 <a href="logout.php" style="padding-right:0"><span class="btn btn-large btn-success">Logout</span></a>
 	</li>
+     <?php 
+         }
+         else
+         {
+         	?>
+         	<li class=""><a href="profile.php">Profile</a></li>
+              
+         	<li class=""><a href="special_offer.php">Offer</a></li>
+          <li class="">
+	 <a href="logout.php" style="padding-right:0"><span class="btn btn-large btn-success">Logout</span></a>
+	</li>
+	<?php 
+         }
+       }
+        else
+         {
+      ?>
+        <li class=""><a href="Register.php">Register</a></li>
+         <li class=""><a href="special_offer">Offer</a></li>
+          <li class="">
+	 <a href="login.php" style="padding-right:0"><span class="btn btn-large btn-success">Login</span></a>
+	</li>
+      <?php 
+        }
+      ?>
+
+	 
+	
     </ul>
+
   </div>
 </div>
 </div>
@@ -114,7 +127,7 @@ session_start();
 	<div class="row">
 <!-- Sidebar ================================================== -->
 	<div id="sidebar" class="span3">
-		<div class="well well-small"><a id="myCart" href="product_summary.html"><img src="themes/images/ico-cart.png" alt="cart">3 Items in your cart  <span class="badge badge-warning pull-right">$155.00</span></a></div>
+		
 		<ul id="sideManu" class="nav nav-tabs nav-stacked">
 			<li class="subMenu open"><a> SYMPHONI [230]</a>
 				<ul>
@@ -256,55 +269,72 @@ session_start();
 <div class="tab-content">
 	<div class="tab-pane" id="listView">
 		
-		
+		<?php
+                  $conn = new mysqli("localhost", "root", "", "mobile_market");
+                  $sql="SELECT * FROM product";
+					$result=$conn->query($sql);
+					while($row = $result->fetch_assoc())
+					{
+				?>
+
 		<hr class="soft"/>
 		<div class="row">	  
 			<div class="span2">
-				<img src="themes/images/products/3.jpg" alt=""/>
+				<img src="<?php echo $row['img_link']; ?>" alt=""/>
 			</div>
 			<div class="span4">
-				<h3>New | Available</h3>				
+				<h3><?php echo $row['product_name']; ?> </h3>				
 				<hr class="soft"/>
-				<h5>Product Name </h5>
-				<p>
-				Nowadays the lingerie industry is one of the most successful business spheres.We always stay in touch with the latest fashion tendencies - 
-				that is why our goods are so popular..
-				</p>
-				<a class="btn btn-small pull-right" href="product_details.php">View Details</a>
+				<h5><?php echo $row['camera_resulation']; ?> </h5>
+				
+				<a class="btn btn-small pull-right" href="product_details.php?id=<?php echo $row['product_id']; ?>">View Details</a>
 				<br class="clr"/>
 			</div>
 			<div class="span3 alignR">
 				<form class="form-horizontal qtyFrm">
-				<h3> $140.00</h3>
-				<label class="checkbox">
-				<input type="checkbox">  Adds product to compair
-				</label><br/>
+				<h3><?php echo $row['product_price']; ?> tk/=</h3>
+				<br/>
 				
-				<a href="product_details.php" class="btn btn-large btn-primary"> Add to <i class=" icon-shopping-cart"></i></a>
+				<a href="product_details.php" class="btn btn-large btn-primary"> View <i class=" icon-shopping-cart"></i></a>
 				<a href="product_details.php" class="btn btn-large"><i class="icon-zoom-in"></i></a>
 				
 				</form>
 			</div>
 		</div>
+
+		<?php 
+			}
+		?>
+
+
 		<hr class="soft"/>
 	</div>
 
 	<div class="tab-pane  active" id="blockView">
 		<ul class="thumbnails">
-
+             
+             <?php
+                  $conn = new mysqli("localhost", "root", "", "mobile_market");
+                  $sql="SELECT * FROM product";
+					$result=$conn->query($sql);
+					while($row = $result->fetch_assoc())
+					{
+				?>
 
 			<li class="span3">
 			  <div class="thumbnail">
-				<a href="product_details.php"><img src="themes/images/products/3.jpg" alt=""/></a>
+				<a href="product_details.php?id=<?php echo $row['product_id'];?>"><img src="<?php echo $row['img_link']; ?>" alt=""/></a>
 				<div class="caption">
-				  <h5>Manicure &amp; Pedicure</h5>
-				  <p> 
-					I'm a paragraph. Click here 
-				  </p>
-				   <h4 style="text-align:center"><a class="btn" href="product_details.php"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">&euro;222.00</a></h4>
+				  <h5><?php echo $row['product_name'];?></h5>
+				  
+				   <h4 style="text-align:center"><a class="btn" href="product_details.php?id=<?php echo $row['product_id'];?>"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">View <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#"><?php echo $row['product_price']; ?></a></h4>
 				</div>
 			  </div>
 			</li>
+
+			<?php 
+		      }
+			?>
 
 			
 		  </ul>
@@ -312,7 +342,7 @@ session_start();
 	</div>
 </div>
 
-	<a href="compair.html" class="btn btn-large pull-right">Compair Product</a>
+
 	<div class="pagination">
 			<ul>
 			<li><a href="#">&lsaquo;</a></li>
@@ -336,25 +366,25 @@ session_start();
 		<div class="row">
 			<div class="span3">
 				<h5>ACCOUNT</h5>
-				<a href="login.html">YOUR ACCOUNT</a>
-				<a href="login.html">PERSONAL INFORMATION</a> 
-				<a href="login.html">ADDRESSES</a> 
-				<a href="login.html">DISCOUNT</a>  
-				<a href="login.html">ORDER HISTORY</a>
+				<a href="login.php">YOUR ACCOUNT</a>
+				<a href="login.php">PERSONAL INFORMATION</a> 
+				<a href="login.php">ADDRESSES</a> 
+				<a href="login.php">DISCOUNT</a>  
+				<a href="login.php">ORDER HISTORY</a>
 			 </div>
 			<div class="span3">
 				<h5>INFORMATION</h5>
-				<a href="contact.html">CONTACT</a>  
-				<a href="register.html">REGISTRATION</a>  
-				<a href="legal_notice.html">LEGAL NOTICE</a>  
-				<a href="tac.html">TERMS AND CONDITIONS</a> 
-				<a href="faq.html">FAQ</a>
+				<a href="#">CONTACT</a>  
+				<a href="register.php">REGISTRATION</a>  
+				<a href="#">LEGAL NOTICE</a>  
+				<a href="#">TERMS AND CONDITIONS</a> 
+				<a href="#">FAQ</a>
 			 </div>
 			<div class="span3">
 				<h5>OUR OFFERS</h5>
 				<a href="#">NEW PRODUCTS</a> 
 				<a href="#">TOP SELLERS</a>  
-				<a href="special_offer.html">SPECIAL OFFERS</a>  
+				<a href="special_offer.php">SPECIAL OFFERS</a>  
 				<a href="#">MANUFACTURERS</a> 
 				<a href="#">SUPPLIERS</a> 
 			 </div>
@@ -365,7 +395,7 @@ session_start();
 				<a href="#"><img width="60" height="60" src="themes/images/youtube.png" title="youtube" alt="youtube"/></a>
 			 </div> 
 		 </div>
-		<p class="pull-right">&copy; Bootshop</p>
+		<p class="pull-right">&copy; Mobileshop</p>
 	</div><!-- Container End -->
 	</div>
 <!-- Placed at the end of the document so the pages load faster ============================================= -->
@@ -377,59 +407,7 @@ session_start();
     <script src="themes/js/jquery.lightbox-0.5.js"></script>
 	
 	<!-- Themes switcher section ============================================================================================= -->
-<div id="secectionBox">
-<link rel="stylesheet" href="themes/switch/themeswitch.css" type="text/css" media="screen" />
-<script src="themes/switch/theamswitcher.js" type="text/javascript" charset="utf-8"></script>
-	<div id="themeContainer">
-	<div id="hideme" class="themeTitle">Style Selector</div>
-	<div class="themeName">Oregional Skin</div>
-	<div class="images style">
-	<a href="themes/css/#" name="bootshop"><img src="themes/switch/images/clr/bootshop.png" alt="bootstrap business templates" class="active"></a>
-	<a href="themes/css/#" name="businessltd"><img src="themes/switch/images/clr/businessltd.png" alt="bootstrap business templates" class="active"></a>
-	</div>
-	<div class="themeName">Bootswatch Skins (11)</div>
-	<div class="images style">
-		<a href="themes/css/#" name="amelia" title="Amelia"><img src="themes/switch/images/clr/amelia.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="spruce" title="Spruce"><img src="themes/switch/images/clr/spruce.png" alt="bootstrap business templates" ></a>
-		<a href="themes/css/#" name="superhero" title="Superhero"><img src="themes/switch/images/clr/superhero.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="cyborg"><img src="themes/switch/images/clr/cyborg.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="cerulean"><img src="themes/switch/images/clr/cerulean.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="journal"><img src="themes/switch/images/clr/journal.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="readable"><img src="themes/switch/images/clr/readable.png" alt="bootstrap business templates"></a>	
-		<a href="themes/css/#" name="simplex"><img src="themes/switch/images/clr/simplex.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="slate"><img src="themes/switch/images/clr/slate.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="spacelab"><img src="themes/switch/images/clr/spacelab.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="united"><img src="themes/switch/images/clr/united.png" alt="bootstrap business templates"></a>
-		<p style="margin:0;line-height:normal;margin-left:-10px;display:none;"><small>These are just examples and you can build your own color scheme in the backend.</small></p>
-	</div>
-	<div class="themeName">Background Patterns </div>
-	<div class="images patterns">
-		<a href="themes/css/#" name="pattern1"><img src="themes/switch/images/pattern/pattern1.png" alt="bootstrap business templates" class="active"></a>
-		<a href="themes/css/#" name="pattern2"><img src="themes/switch/images/pattern/pattern2.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern3"><img src="themes/switch/images/pattern/pattern3.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern4"><img src="themes/switch/images/pattern/pattern4.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern5"><img src="themes/switch/images/pattern/pattern5.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern6"><img src="themes/switch/images/pattern/pattern6.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern7"><img src="themes/switch/images/pattern/pattern7.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern8"><img src="themes/switch/images/pattern/pattern8.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern9"><img src="themes/switch/images/pattern/pattern9.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern10"><img src="themes/switch/images/pattern/pattern10.png" alt="bootstrap business templates"></a>
-		
-		<a href="themes/css/#" name="pattern11"><img src="themes/switch/images/pattern/pattern11.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern12"><img src="themes/switch/images/pattern/pattern12.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern13"><img src="themes/switch/images/pattern/pattern13.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern14"><img src="themes/switch/images/pattern/pattern14.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern15"><img src="themes/switch/images/pattern/pattern15.png" alt="bootstrap business templates"></a>
-		
-		<a href="themes/css/#" name="pattern16"><img src="themes/switch/images/pattern/pattern16.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern17"><img src="themes/switch/images/pattern/pattern17.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern18"><img src="themes/switch/images/pattern/pattern18.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern19"><img src="themes/switch/images/pattern/pattern19.png" alt="bootstrap business templates"></a>
-		<a href="themes/css/#" name="pattern20"><img src="themes/switch/images/pattern/pattern20.png" alt="bootstrap business templates"></a>
-		 
-	</div>
-	</div>
-</div>
+
 <span id="themesBtn"></span>
 </body>
 </html>

@@ -1,14 +1,6 @@
-<?php
+<?php 
 session_start();
-
-       if(isset($_COOKIE['id'])||(isset($_SESSION['id']) && !empty($_SESSION['id'])))
-        {
-        	   header('Location:index.php');
-        }
-        else
-        {
-     ?>
-
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -69,12 +61,58 @@ session_start();
 		  <button type="submit" id="submitButton" class="btn btn-primary">Go</button>
     </form>
     <ul id="topMenu" class="nav pull-right">
-	 <li class=""><a href="special_offer.php">Product</a></li>
-	 <li class=""><a href="register.php">Register</a></li>
-	 <li class=""><a href="special_offer.php">Offer</a></li>
-	 <li class="">
+	 <li class=""><a href="products.php">Product</a></li>
+	 
+	 <?php
+	
+	 $cc=null;
+     $ss=null;
+	if(isset($_COOKIE['id']))
+	{
+	$cc=$_COOKIE['id'];
+	}
+	else if(isset($_SESSION['id']))
+	{
+	$ss=$_SESSION['id'];
+	}
+	   if(isset($_COOKIE['id'])||(isset($_SESSION['id'])))
+	   {
+       if($cc=='admin'||$ss=='admin')
+        {
+     ?>
+     <li class=""><a href="special_offer">Offer</a></li>
+	 <li class=""><a href="admin_pannel_1.php">Admin</a></li>
+	  <li class="">
+	 <a href="logout.php" style="padding-right:0"><span class="btn btn-large btn-success">Logout</span></a>
+	</li>
+     <?php 
+         }
+         else
+         {
+         	?>
+         	<li class=""><a href="profile.php">Profile</a></li>
+             
+         	<li class=""><a href="#">Offer</a></li>
+          <li class="">
+	 <a href="logout.php" style="padding-right:0"><span class="btn btn-large btn-success">Logout</span></a>
+	</li>
+	<?php 
+         }
+       }
+        else
+         {
+      ?>
+        <li class=""><a href="Register.php">Register</a></li>
+         <li class=""><a href="special_offer">Offer</a></li>
+          <li class="">
 	 <a href="login.php" style="padding-right:0"><span class="btn btn-large btn-success">Login</span></a>
 	</li>
+      <?php 
+        }
+      ?>
+
+	 
+	
     </ul>
   </div>
 </div>
@@ -200,65 +238,121 @@ session_start();
 	<div class="span9">
     <ul class="breadcrumb">
 		<li><a href="index.php">Home</a> <span class="divider">/</span></li>
-		<li class="active">Login</li>
+		<li class="active">Special offers</li>
     </ul>
-	<h3> Login</h3>	
+	<h4> 20% Discount Special offer<small class="pull-right"> 40 products are available </small></h4>
+
 	<hr class="soft"/>
-	
-	<div class="row">
-		<div class="span4">
-			<div class="well">
-			<h5>CREATE YOUR ACCOUNT</h5><br/>
-			Enter your e-mail address to create an account.<br/><br/><br/>
-			<form action="register.php">
-			  <div class="control-group">
-				<label class="control-label" for="inputEmail0">E-mail address</label>
-				<div class="controls">
-				  <input class="span3"  type="text" id="inputEmail0" placeholder="Email">
-				</div>
-			  </div>
-			  <div class="controls">
-			  <button type="submit" class="btn block">Create Your Account</button>
-			  </div>
+	<form class="form-horizontal span6">
+		<div class="control-group">
+		  <label class="control-label alignL">Sort By </label>
+			<select>
+              <option>Priduct name A - Z</option>
+              <option>Priduct name Z - A</option>
+              <option>Priduct Stoke</option>
+              <option>Price Lowest first</option>
+            </select>
+		</div>
+	  </form>
+	<div id="myTab" class="pull-right">
+	 <a href="#listView" data-toggle="tab"><span class="btn btn-large"><i class="icon-list"></i></span></a>
+	 <a href="#blockView" data-toggle="tab"><span class="btn btn-large btn-primary"><i class="icon-th-large"></i></span></a>
+	</div>
+
+
+<br class="clr"/>
+<div class="tab-content">
+	<div class="tab-pane" id="listView">
+
+		
+		<?php
+                  $conn = new mysqli("localhost", "root", "", "mobile_market");
+                  $sql="SELECT * FROM product where product_offer='1'";
+					$result=$conn->query($sql);
+					while($row = $result->fetch_assoc())
+					{
+				?>
+
+	<hr class="soft"/>
+	<div class="row">	  
+			<div class="span2">
+				<img src="<?php echo $row['img_link']; ?>" alt=""/>
+			</div>
+			<div class="span4">
+				<h3><?php echo $row['product_name']; ?></h3>				
+				<hr class="soft"/>
+				<h5><?php echo "20% Offer"; ?></h5>
+			
+				<a class="btn btn-small pull-right" href="product_details.php?id=<?php echo $row['product_id'];?>">View Details</a>
+				<br class="clr"/>
+			</div>
+			<div class="span3 alignR">
+			<form class="form-horizontal qtyFrm">
+				<h3> <?php echo $row['product_price']-$row['product_price']*(.2); ?></h3>
+				
+				<a href="product_details.php?id=<?php echo $row['product_id'];?>" class="btn btn-large btn-primary"> Add to <i class=" icon-shopping-cart"></i></a>
+				<a href="product_details.php?id=<?php echo $row['product_id'];?>" class="btn btn-large"><i class="icon-zoom-in"></i></a>
 			</form>
-		</div>
-		</div>
-		<div class="span1"> &nbsp;</div>
-		<div class="span4">
-			<div class="well">
-			<h5>ALREADY REGISTERED ?</h5>
-			<form action="login_process.php" method="post">
-			  <div class="control-group">
-				<label class="control-label" for="inputEmail1">Email</label>
-				<div class="controls">
-				  <input class="span3" name="input_email"  type="text" id="inputEmail1" placeholder="Email">
+			</div>
+	</div>
+	<hr class="soft"/>
+      <?php 
+      	}
+      ?>
+
+	</div>
+
+	<div class="tab-pane  active" id="blockView">
+		<ul class="thumbnails">
+
+		<?php
+                  $conn = new mysqli("localhost", "root", "", "mobile_market");
+                  $sql="SELECT * FROM product where product_offer='1'";
+					$result=$conn->query($sql);
+					while($row = $result->fetch_assoc())
+					{
+				?>
+
+			<li class="span3">
+			  <div class="thumbnail">
+				<a href="product_details.php?id=<?php echo $row['product_id']; ?>"><img src="<?php echo $row['img_link']; ?>" alt=""/></a>
+				<div class="caption">
+				  <h5><?php echo $row['product_name']; ?></h5>
+				  
+				  <h4 style="text-align:center"><a class="btn" href="product_details.php?id=<?php echo $row['product_id']; ?>"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#"><?php echo $row['product_price']; ?> tk/=</a></h4>
 				</div>
 			  </div>
-			  <div class="control-group">
-				<label class="control-label" for="inputPassword1">Password</label>
-				<div class="controls">
-				  <input type="password" class="span3" name="input_password"  id="inputPassword1" placeholder="Password">
-				</div>
-			  </div>
-			  <div class="control-group">
-				<label class="checkbox">
-				<input type="checkbox" name="check" value="yes"> Remember me
-				</label>
-			  </div>
-			  <div class="control-group">
-				<div class="controls">
-				  <button type="submit" class="btn">Sign in</button> <a href="#">Forget password?</a>
-				</div>
-			  </div>
-			</form>
-		</div>
-		</div>
-	</div>	
-	
+			</li>
+
+			<?php 
+		   } 
+			?>
+			
+			
+			
+		  </ul>
+
+
+	<hr class="soft"/>
+	</div>
+</div>
+	<div class="pagination">
+		<ul>
+		<li><a href="#">&lsaquo;</a></li>
+		<li><a href="#">1</a></li>
+		<li><a href="#">2</a></li>
+		<li><a href="#">3</a></li>
+		<li><a href="#">4</a></li>
+		<li><a href="#">...</a></li>
+		<li><a href="#">&rsaquo;</a></li>
+		</ul>
+	</div>
+<br class="clr"/>
 </div>
 </div></div>
 </div>
 <!-- MainBody End ============================= -->
+
 <!-- Footer ================================================================== -->
 	<div  id="footerSection">
 	<div class="container">
@@ -310,8 +404,3 @@ session_start();
 <span id="themesBtn"></span>
 </body>
 </html>
-
-<?php 
-
-}
-?>
